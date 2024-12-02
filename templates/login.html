@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NOM NOM NOOK - Login</title>
+    {% load static %}
+
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #ffb1a3f8;
+            overflow: hidden;
+        }
+
+       /* Animated background with cooking symbols */
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.symbol {
+    position: absolute;
+    width: 90px;  /* Increased size */
+    height: 90px; /* Increased size */
+    opacity: 0.6; /* Increased transparency */
+    animation: float-top-down 10s infinite ease-in-out;
+    top: 15%;
+}
+
+/* Randomize left position and animation duration for top-down movement */
+.symbol:nth-child(1) { left: 5%; animation-duration: 10s; }
+.symbol:nth-child(2) { left: 25%; animation-duration: 12s; }
+.symbol:nth-child(3) { left: 45%; animation-duration: 15s; }
+.symbol:nth-child(4) { left: 65%; animation-duration: 18s; }
+.symbol:nth-child(5) { left: 85%; animation-duration: 20s; }
+
+/* Updated keyframes for random top-down movement */
+@keyframes float-top-down {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(50px, -100px); }  /* Move to the right and up */
+    50% { transform: translate(-50px, 50px); }   /* Move to the left and down */
+    75% { transform: translate(100px, -50px); }  /* Move to the right and up */
+    100% { transform: translate(0, 0); }         /* Back to start */
+}
+
+
+
+.container {
+    width: 300px;
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border-radius: 10px;
+    z-index: 1;
+}
+
+h1 {
+    color: #e74c3c;
+    margin-bottom: 10px;
+}
+
+p {
+    color: #555;
+}
+
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .button {
+            width: 100%;
+            padding: 10px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .button:hover {
+            background-color: #c0392b;
+        }
+
+        .error {
+            color: red;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Animated Background -->
+<div class="background">
+    <!-- Top-to-bottom symbols -->
+    <img src="{% static 'images/spatula.png' %}" class="symbol" alt="Spatula">
+    <img src="{% static 'images/chef-hat.png' %}" class="symbol" alt="Chef Hat">
+    <img src="{% static 'images/pot.png' %}" class="symbol" alt="Pot">
+    <img src="{% static 'images/pan.png' %}" class="symbol" alt="Pan">
+    <img src="{% static 'images/dish.png' %}" class="symbol" alt="Dish">
+</div>
+
+    <!-- Welcome Section -->
+    <div id="welcomeSection" class="container">
+        <h1>Welcome to NOM NOM NOOK!</h1>
+        <p>Savor Every Bite, Share Every Recipe</p>
+        <button class="button" onclick="showLogin()">Get Started</button>
+    </div>
+
+    <!-- Login Section -->
+    <div id="loginSection" class="container hidden">
+        <h1>Login</h1>
+        <input type="text" id="loginUsername" class="input-field" placeholder="Username">
+        <input type="password" id="loginPassword" class="input-field" placeholder="Password">
+        <button class="button" onclick="login()">Login</button>
+        <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+    </div>
+    
+
+    <!-- Sign-Up Section -->
+    <div id="signupSection" class="container hidden">
+        <h1>Sign Up</h1>
+        <input type="text" id="signupUsername" class="input-field" placeholder="Username">
+        <span id="usernameError" class="error hidden">Username must contain only letters.</span>
+        <input type="password" id="signupPassword" class="input-field" placeholder="Password">
+        <input type="password" id="signupConfirmPassword" class="input-field" placeholder="Confirm Password">
+        <span id="passwordError" class="error hidden">Passwords do not match.</span>
+        <button class="button" onclick="signup()">Done</button>
+    </div>
+
+    <!-- JavaScript for Navigation and Validation -->
+    <script>
+        function showLogin() {
+            document.getElementById('welcomeSection').classList.add('hidden');
+            document.getElementById('loginSection').classList.remove('hidden');
+        }
+
+        function showSignup() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('signupSection').classList.remove('hidden');
+        }
+
+
+function signup() {
+    const username = document.getElementById('signupUsername').value;
+    const password = document.getElementById('signupPassword').value;
+    const confirmPassword = document.getElementById('signupConfirmPassword').value;
+    let valid = true;
+
+    // Username validation (only letters allowed)
+    if (!/^[a-zA-Z]+$/.test(username)) {
+        document.getElementById('usernameError').classList.remove('hidden');
+        valid = false;
+    } else {
+        document.getElementById('usernameError').classList.add('hidden');
+    }
+
+    // Password matching validation
+    if (password !== confirmPassword) {
+        document.getElementById('passwordError').classList.remove('hidden');
+        valid = false;
+    } else {
+        document.getElementById('passwordError').classList.add('hidden');
+    }
+
+    // If everything is valid, submit data to the backend
+    if (valid) {
+        fetch('/signup/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')  // Include CSRF token if needed
+            },
+            body: JSON.stringify({
+                'username': username,
+                'password': password
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Sign-up successful!');
+                document.getElementById('signupSection').classList.add('hidden');
+                document.getElementById('loginSection').classList.remove('hidden');
+            } else {
+                alert('Sign-up failed: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+}
+
+
+
+// Function to retrieve the CSRF token for POST requests
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+function login() {
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+
+    if (username && password) {
+        fetch('/api/login/', {  // Adjust this URL to your Django endpoint
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        })
+        .then(response => {
+            if (response.ok) {
+                // Redirect to home.html if login is successful
+                window.location.href = '/home/';  // Adjust this URL if needed
+            } else {
+                alert('Invalid username or password.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again later.');
+        });
+    } else {
+        alert('Please enter valid login credentials.');
+    }
+}
+
+
+    </script>
+
+</body>
+</html>

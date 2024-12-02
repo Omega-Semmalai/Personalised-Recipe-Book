@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload - Global Recipe Swap</title>
+    {% load static %}
+
+    <style>
+        /* Global styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('{% static "images/Home2.jpg" %}');
+            background-size: cover;
+            color: white;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 20px;
+            width: calc(100% - 40px); /* Adjust width as needed */
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            margin-right: auto; /* Pushes links to the left */
+        }
+
+        .navbar img {
+            height: 50px; /* Ensure consistent logo height */
+            margin-right: 20px;
+        }
+
+        .navbar a {
+            text-decoration: none;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Upload form styles */
+        .upload-form {
+            text-align: center;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 204, 0.8);
+            border-radius: 20px;
+        }
+
+        .upload-form input[type="text"],
+        .upload-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        .upload-form button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            font-size: 16px;
+        }
+
+        .image-preview {
+            margin-top: 20px;
+            width: 250px;
+            height: 250px;
+            overflow: hidden;
+            border-radius: 10px;
+            margin: 10px auto;
+        }
+
+        .image-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .drop-area {
+            width: 100%;
+            height: 100px;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            line-height: 100px;
+            color: #555;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .drop-area.dragover {
+            border-color: #007bff;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="navbar">
+            <img src="{% static 'images/Logor.png' %}" alt="Nom Nom Nook Logo">
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'about' %}">About</a>
+                <a href="{% url 'upload_recipe' %}">Upload Recipe</a>
+                <a href="{% url 'view_recipe' %}">View Recipe</a>
+            </div>
+        </div>
+    </header>
+    <div class="upload-form">
+        <h1>Upload Your Recipe</h1>
+        <form id="recipeForm" action="{% url 'upload_recipe' %}" method="post">
+            {% csrf_token %}
+            <input type="text" name="recipe_title" placeholder="Recipe Title" required><br>
+            <textarea name="description" rows="5" placeholder="Recipe Description" required></textarea><br>
+            <input type="text" name="ingredients" placeholder="Ingredients (comma separated)" required><br>
+            <textarea name="instructions" rows="8" placeholder="Cooking Instructions" required></textarea><br>
+            <button type="submit">Submit Recipe</button>
+        </form>
+        
+    </div>
+
+    <script>
+        // Form submission logic
+        document.getElementById('recipeForm').addEventListener('submit', (event) => {
+            const formData = new FormData(event.target);
+            const recipeTitle = formData.get('recipe_title');
+            const description = formData.get('description');
+            const ingredients = formData.get('ingredients');
+            const instructions = formData.get('instructions');
+    
+            const regex = /^[a-zA-Z\s]*$/;
+    
+            if (!regex.test(recipeTitle)) {
+                alert('Invalid characters in Recipe Title. Only letters and spaces are allowed.');
+                event.preventDefault(); // Prevent submission
+                return;
+            }
+    
+            if (!regex.test(description)) {
+                alert('Invalid characters in Recipe Description. Only letters and spaces are allowed.');
+                event.preventDefault(); // Prevent submission
+                return;
+            }
+    
+            // After validation, allow the form to submit
+            // Optionally, you can show a confirmation popup here
+        });
+    </script>
+</body>
+</html>

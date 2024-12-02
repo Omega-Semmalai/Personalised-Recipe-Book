@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About - Nom Nom Nook</title>
+    {% load static %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: black; 
+            color: white; 
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 20px;
+        }
+        .navbar img {
+            height: 50px; /* Same as Home page */
+            margin-right: 20px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+            margin-right: auto; /* Pushes links to the left */
+        }
+        .navbar a {
+            text-decoration: none;
+            color: black; 
+            padding: 10px 20px;
+            border-radius: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        .navbar a:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .about-content {
+            background-color: rgba(255, 255, 204, 0.8); 
+            padding: 20px;
+            margin: 20px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .about-content img {
+            width: 100%; 
+            height: auto; 
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .about-content h1 {
+            font-size: 36px; 
+            color: red; 
+        }
+        .about-content p {
+            color: black; 
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img src="{% static 'images/Logor.png' %}" alt="Nom Nom Nook Logo">
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'upload_recipe' %}">Upload Recipe</a>
+            <a href="{% url 'view_recipe' %}">View Recipe</a>
+        </div>
+    </div>
+    <div class="about-content">
+        <img src="{% static 'images/About.png' %}" alt="About Image">
+        <h1>Welcome to Nom Nom Nook</h1>
+        <p>Explore and share recipes from around the world at Nom Nom Nook, your ultimate destination for culinary inspiration and delicious discoveries!</p>
+        <p>At Nom Nom Nook, we believe that every meal is an opportunity to create something extraordinary. Our platform is a vibrant community where food enthusiasts, home cooks, and culinary explorers come together to share their love for cooking. Whether you're looking for a quick weeknight dinner, a show-stopping dessert, or a new twist on a classic dish, we've got you covered.</p>
+        <p>What makes us unique?</p>
+        <ul>
+            <li><strong>Community-Driven Content:</strong> Our recipes are submitted by passionate cooks from around the world, bringing you a diverse array of flavors and traditions.</li>
+            <li><strong>Easy Navigation:</strong> Find exactly what you're craving with our user-friendly search and filtering options.</li>
+            <li><strong>Share Your Creations:</strong> Have a family recipe or a personal favorite? Submit your own recipes and inspire others.</li>
+            <li><strong>Cooking Tips & Tricks:</strong> Get expert advice and helpful tips to elevate your cooking skills.</li>
+        </ul>
+        <p>Join us on this culinary adventure and transform your kitchen into a place of endless creativity and joy. Let's cook, share, and savor together!</p>
+        <p><em>Welcome to the delicious world of Nom Nom Nook. Happy cooking!</em></p>
+    </div>
+</body>
+</html>

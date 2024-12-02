@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>View Recipes - Global Recipe Swap</title>
+    {% load static %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url('{% static "images/Home3.jpg" %}') no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+            color: white; 
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 20px;
+            width: calc(100% - 40px); 
+        }
+        .navbar img {
+            height: 50px; /* Adjust the size of the logo as needed */
+            margin-right: 20px;
+        }
+        .navbar a {
+            text-decoration: none;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        .navbar a:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .search-bar {
+            flex-grow: 1;
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .search-bar input {
+            width: 99%;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            border-radius: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s; /* Add transition for smooth hover effect */
+        }
+
+        .search-bar button:hover {
+             background-color: #0056b3; /* Darker shade on hover */
+        }
+        .recipe-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            padding: 20px;
+        }
+        .recipe-card {
+            background-color: rgba(255, 255, 204, 0.8); 
+            border: 2px solid black;
+            border-radius: 20px;
+            margin: 20px;
+            width: calc(33.33% - 40px); 
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden;
+            min-width: 250px; 
+            text-align: center; /* Added to center align content */
+        }
+        .recipe-card:hover {
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        .recipe-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto 20px auto; /* Center align image */
+        }
+        .recipe-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .recipe-details {
+            width: 100%; /* Ensure full width */
+        }
+        .recipe-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: red; /* Adjusted color to red */
+            font-family: 'Times New Roman', Times, serif; 
+        }
+        .recipe-description {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            color: black; /* Adjusted color to black */
+        }
+
+        .recipe-card button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    margin: 5px; /* Add some spacing between buttons */
+}
+
+.recipe-card button.view-btn {
+    background-color: #28a745; /* Green for View */
+    color: white;
+}
+
+.recipe-card button.edit-btn {
+    background-color: #007bff; /* Blue for Edit */
+    color: white;
+}
+
+.recipe-card button.delete-btn {
+    background-color: #dc3545; /* Red for Delete */
+    color: white;
+}
+
+.recipe-card button:hover {
+    transform: scale(1.05); /* Slightly enlarge on hover */
+}
+
+.recipe-card button:active {
+    transform: scale(0.95); /* Slightly shrink on click */
+}
+
+    
+        .watch-video-button:hover {
+            background-color: #0056b3;
+        }
+        .recipe-video {
+            margin-top: 10px;
+            display: none; /* Hidden by default */
+            width: 100%;
+        }
+        .recipe-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            color : black;
+        }
+        .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 600px;
+    width: 90%;
+    color: black; /* Ensure text inside the modal is black */
+    font-family: 'Lora', serif;
+}
+
+.modal-content h2 {
+    color: red; /* Change this to your desired color */
+    font-family: 'Verdana', sans-serif;}
+
+
+        .close-btn {
+            cursor: pointer;
+            color: red;
+            float: right;
+        }
+
+        /* edit button*/
+        .edit-modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px); /* Adds a blur effect */
+}
+
+.edit-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Adds a shadow */
+    transition: transform 0.3s ease; /* Smooth transition */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+}
+
+.edit-modal-content:hover {
+    transform: scale(1.02); /* Slightly scales on hover */
+}
+
+.close-edit-btn {
+    cursor: pointer;
+    color: #dc3545; /* Bootstrap danger color */
+    font-weight: bold;
+    font-size: 20px;
+    align-self: flex-end; /* Align to the right */
+}
+
+.save-btn {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 15px;
+    font-size: 16px;
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+.save-btn:hover {
+    background-color: #0056b3; /* Darker shade on hover */
+}
+
+h1, h2, h3, h4, h5, h6 { 
+    color: red; /* Red for headings */
+    margin: 10px 0; /* Space out headings */
+}
+
+.edit-recipe-title {
+    color: black; /* Title in black */
+    font-size: 24px; /* Adjust size as needed */
+    margin-bottom: 20px; /* Space below the title */
+}
+.send-btn {
+    background-color: red; /* Red background */
+    color: white;          /* White text */
+    border: none;         /* No border */
+    padding: 10px 20px;   /* Padding */
+    text-align: center;    /* Center text */
+    text-decoration: none;  /* No underline */
+    display: inline-block;  /* Inline-block */
+    font-size: 16px;       /* Font size */
+    cursor: pointer;        /* Pointer cursor */
+    border-radius: 5px;    /* Rounded corners */
+}
+
+.send-btn:hover {
+    background-color: darkred; /* Darker red on hover */
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img src="{% static 'images/Logor.png' %}" alt="Nom Nom Nook Logo">
+        <div class="nav-links">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'upload_recipe' %}">Upload Recipe</a>
+            <a href="{% url 'view_recipe' %}">View Recipe</a>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search...">
+            <button onclick="searchRecipe()">Search</button>
+        </div>
+    </div>
+        <div class="recipe-container">
+            {% for recipe in recipes %}
+                <div class="recipe-card" data-recipe-id="{{ recipe.id }}">
+                    <div class="recipe-details">
+                        <div class="recipe-title">{{ recipe.recipe_title }}</div>
+                        <div class="recipe-description">{{ recipe.description }}</div>
+                        <button class="view-btn" onclick="viewRecipe('{{ recipe.id }}')">View</button> 
+                        <button class="edit-btn" onclick="openEditModal('{{ recipe.id }}')">Edit</button>
+                        <button class="send-btn" onclick="sendRecipe('{{ recipe.id }}')">Send</button>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+    <div class="recipe-modal" id="recipeModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">×</span>
+            <h2 id="modal-title"></h2>
+            <p id="modal-description"></p>
+            <p><strong>Ingredients:</strong></p>
+            <p id="modal-ingredients"></p>
+            <p><strong>Instructions:</strong></p>
+            <p id="modal-instructions"></p>
+        </div>
+    </div>
+
+    <div class="edit-modal" id="editModal">
+        <div class="edit-modal-content">
+            <span class="close-edit-btn" onclick="closeEditModal()">×</span>
+            <h2>Edit Recipe</h2>
+            <input type="text" id="edit-recipe-title" placeholder="Recipe Title"> 
+            <textarea id="edit-recipe-description" placeholder="Description"></textarea>           
+            <textarea id="edit-recipe-ingredients" placeholder="Ingredients"></textarea>
+            <textarea id="edit-recipe-instructions" placeholder="Instructions"></textarea>
+            <button class="save-btn" onclick="updateRecipe()">Save</button>
+        </div>
+    </div>
+    <!-- Delete Modal -->
+<div class="delete-modal" id="deleteModal" style="display: none;">
+    <div class="delete-modal-content">
+        <span class="close-delete-btn" onclick="closeDeleteModal()">×</span>
+        <h2>Are you sure you want to delete this recipe?</h2>
+        <button class="confirm-delete-btn" onclick="confirmDelete()">Delete</button>
+        <button class="cancel-delete-btn" onclick="closeDeleteModal()">Cancel</button>
+    </div>
+</div>
+
+    <script>
+        function viewRecipe(recipeId) {
+    fetch(`/recipes/${recipeId}/`)  // Replace with your actual URL pattern
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('modal-title').innerText = data.recipe_title;
+            document.getElementById('modal-description').innerText = data.description;
+            document.getElementById('modal-ingredients').innerText = data.ingredients;
+            document.getElementById('modal-instructions').innerText = data.instructions;
+
+            // Display the modal
+            document.getElementById('recipeModal').style.display = 'flex';
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+}
+
+function closeModal() {
+    document.getElementById('recipeModal').style.display = 'none';
+}
+
+
+
+function openEditModal(recipeId) {
+    fetch(`/recipes/${recipeId}/`)  // Replace with your actual URL pattern
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Set recipe ID in the modal for later use
+            document.getElementById('editModal').dataset.recipeId = recipeId;
+
+            document.getElementById('edit-recipe-title').value = data.recipe_title;
+            document.getElementById('edit-recipe-description').value = data.description;
+            document.getElementById('edit-recipe-ingredients').value = data.ingredients;
+            document.getElementById('edit-recipe-instructions').value = data.instructions;
+
+            document.getElementById('editModal').style.display = 'flex';
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+function updateRecipe() {
+    const recipeId = document.getElementById('editModal').dataset.recipeId; // Use dataset to get the ID
+    const updatedData = {
+        recipe_title: document.getElementById('edit-recipe-title').value,
+        description: document.getElementById('edit-recipe-description').value,
+        ingredients: document.getElementById('edit-recipe-ingredients').value,
+        instructions: document.getElementById('edit-recipe-instructions').value,
+    };
+
+    fetch(`/recipes/${recipeId}/update/`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken'),
+        },
+        body: JSON.stringify(updatedData),
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message); // Use the message returned from the server
+        closeEditModal();
+        location.reload(); // Refresh the page
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+        alert('Failed to update recipe. Please try again.');
+    });
+}
+
+// Utility function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+
+// Utility function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+
+
+function sendRecipe(recipeId) {
+    fetch(`/recipes/${recipeId}/`)  // Replace with your actual URL pattern
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Extract recipe details
+            const recipeTitle = encodeURIComponent(data.recipe_title);
+            const recipeDescription = encodeURIComponent(data.description);
+            const recipeIngredients = encodeURIComponent(data.ingredients);
+            const recipeInstructions = encodeURIComponent(data.instructions);
+
+            // Create the message format with line breaks
+            const message = `*${recipeTitle}*\n\n${recipeDescription}\n\n*Ingredients:*\n${recipeIngredients}\n\n*Instructions:*\n${recipeInstructions}`;
+            const phoneNumber = '7708275886'; // Adjust as needed
+            const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
+
+            // Open the WhatsApp URL in a new tab
+            window.open(whatsappUrl, '_blank');
+        })
+        .catch(error => {
+            console.error('There has been a problem with your fetch operation:', error);
+        });
+}
+
+
+
+
+
+// Function to search recipes by title or description
+function searchRecipe() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const recipes = document.querySelectorAll('.recipe-card');
+
+    recipes.forEach(recipe => {
+        const title = recipe.querySelector('.recipe-title').innerText.toLowerCase();
+        const description = recipe.querySelector('.recipe-description').innerText.toLowerCase();
+
+        // Show or hide recipes based on the search query
+        if (title.includes(query) || description.includes(query)) {
+            recipe.style.display = 'block';
+        } else {
+            recipe.style.display = 'none';
+        }
+    });
+}
+</script>
+</body>
+</html>

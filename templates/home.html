@@ -1,0 +1,403 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nom Nom Nook - Global Recipe Swap</title>
+    {% load static %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url("{% static 'images/Home3.jpg' %}") no-repeat center center fixed;
+            background-size: cover;
+            margin: 0;
+            padding: 0;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px 20px;
+            border-radius: 20px;
+            margin: 20px;
+        }
+        .navbar img {
+            height: 50px; /* Adjust the size of the logo as needed */
+            margin-right: 20px;
+        }
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        .navbar a {
+            text-decoration: none;
+            color: black;
+            padding: 10px 20px;
+            border-radius: 20px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        .navbar a:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .search-bar {
+            flex-grow: 1;
+            margin-left: 20px;
+            display: flex;
+            align-items: center;
+        }
+        .search-bar input {
+            width: 90%;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+        }
+        .search-bar button {
+            padding: 10px 20px;
+            margin-left: 10px;
+            border-radius: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        .welcome-message {
+            text-align: center;
+            margin-top: 50px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 20px;
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+        }
+        .recipes-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px;
+        }
+        .recipe-box {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 20px;
+            width: 250px;
+            text-align: center;
+        }
+        .recipe-box img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover; 
+            border-radius: 20px;
+        }
+        .recipe-box button {
+            padding: 10px 20px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+        }
+        .recipe-title {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .contact-section {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 100px 20px; /* Move the contact section down */
+            text-align: left;
+        }
+        .contact-section h2 {
+            margin-top: 0;
+        }
+        .contact-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .contact-info {
+            width: 50%;
+        }
+        .map {
+            width: 45%;
+            height: 500px; /* Increased map size */
+            border-radius: 20px;
+        }
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .contact-form input, .contact-form textarea {
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            width: 100%;
+        }
+        .contact-form button {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        .social-media {
+            margin-top: 20px;
+        }
+        .social-media a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: black;
+            padding: 10px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s;
+        }
+        .social-media a:hover {
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .error-message {
+            color: red;
+            margin-top: 10px;
+        }
+        .success-message {
+            color: green;
+            margin-top: 10px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px;
+        }
+        .button-container {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.modern-button {
+    display: inline-block;
+    padding: 15px 30px;
+    margin: 10px;
+    font-size: 18px;
+    font-family: Arial, sans-serif;
+    color: #fff;
+    background-color: #e74c3c; /* Red color */
+    border: none;
+    border-radius: 30px;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.modern-button:hover {
+    background-color: #c0392b; /* Darker red on hover */
+    transform: scale(1.05); /* Slight scale effect */
+}
+
+.modern-button:active {
+    transform: scale(0.95); /* Shrinks slightly when clicked */
+}
+
+.recipe-count-container {
+    width: 250px;
+    padding: 15px;
+    background-color: rgba(244, 244, 244, 0.9); /* Reduced transparency */
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+    margin-top: 20px;
+    margin-left: 600px;   /* Center horizontally */
+    margin-right: 600px;  /* Center horizontally */
+    font-family: 'Times New Roman', Times, serif;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Modern shadow for better look */
+    max-width: 250px;
+}
+
+.recipe-count-container h2 {
+    font-size: 24px;
+    color: #e74c3c;
+    margin-bottom: 10px;
+    font-weight: 1000; /* Slightly bolder for heading */
+}
+
+.recipe-count-container p {
+    font-size: 18px;
+    color: #333;
+    font-weight: 800; /* Lighter weight for paragraph */
+}
+
+#recent-dishes-container {
+    text-align: center;
+    margin: 20px;
+    color: #e74c3c;
+    font-weight: 800; /* Lighter weight for paragraph */
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.dish-container {
+    display: inline-block; /* Aligns containers in a row */
+    width: 30%; /* Adjusts the width to fit three in a row */
+    height: 100px; /* Set a fixed height for consistency */
+    margin: 10px; /* Adds space between containers */
+    padding: 20px; /* Adds padding inside the container */
+    border: 1px solid #ddd; /* Light border for each container */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    background-color: rgba(244, 244, 244, 0.9); /* Reduced transparency */
+    transition: transform 0.2s; /* Smooth transform effect on hover */
+    overflow: hidden; /* Ensures content stays within the container */
+}
+
+.dish-container:hover {
+    transform: scale(1.05); /* Slightly enlarges the container on hover */
+}
+
+h3 {
+    margin: 0 0 10px; /* Margin for dish title */
+}
+
+p {
+    margin: 0; /* Remove default paragraph margin */
+    font-weight: lighter; /* Adjust paragraph weight if desired */
+}
+
+
+
+    </style>
+
+</head>
+<body>
+    <div class="navbar">
+        <img src="{% static 'images/Logor.png' %}" alt="Nom Nom Nook Logo">
+        <div class="nav-links">
+            <a href="{% url 'about' %}">About</a>
+            <a href="{% url 'upload_recipe' %}">Upload Recipe</a>
+            <a href="{% url 'view_recipe' %}">View Recipe</a>
+
+        </div>
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search...">
+            <button onclick="searchRecipe()">Search</button>
+        </div>
+    </div>
+    <div class="welcome-message">
+        <h1 style="font-size: 50px; font-family: Algerian, sans-serif;">Nom Nom Nook</h1>
+        <p style="font-size: 18px;">Dive into a world of flavors. Discover, share, and savor delicious recipes from our community. Let's cook up something amazing!</p>
+    </div>
+
+    <div class="button-container">
+        <a href="{% url 'view_recipe' %}" class="modern-button">View Recipe</a>
+        <a href="{% url 'upload_recipe' %}" class="modern-button">Upload Recipe</a>
+    </div>
+    
+    <!-- Container to display total recipe count -->
+    <div class="recipe-count-container">
+        <h2>TOTAL  RECIPES</h2>
+        <p>{{ total_recipes }} Recipes</p>
+    </div>
+
+    <!--<div id="recent-dishes-container">
+        <h2>RECENT DISHES</h2>
+        <div class="dish-container">
+            <h3>Paneer Butter Masala</h3>
+            <p>Paneer Butter Masala is a popular vegetarian dish often served with naan or roti or rice</p>
+        </div>
+        <div class="dish-container">
+            <h3>Chicken Curry</h3>
+            <p>A flavorful dish made with tender chicken and aromatic spices.</p>
+        </div>
+        <div class="dish-container">
+            <h3>Apple Pie</h3>
+            <p>A warm and comforting dessert made with apples and cinnamon.</p>
+        </div>
+    </div>-->
+    
+    
+    
+    <div id="contact-us" class="contact-section">
+        <h2>Contact Us</h2>
+        <div class="contact-details">
+            <div class="contact-info">
+                <p><strong>Address:</strong> Coimbatore Institute of Technology, Civil Aerodrome Post, Coimbatore - 641014</p>
+                <p><strong>Email:</strong> contact@nomnomnook.com</p>
+                <p><strong>Phone:</strong> +91 9874563210</p>
+                <div class="contact-form">
+                    <input type="text" id="name" placeholder="Your Name" required>
+                    <input type="email" id="email" placeholder="Your Email" required>
+                    <input type="text" id="subject" placeholder="Subject" required>
+                    <textarea id="message" rows="5" placeholder="Your Message" required></textarea>
+                    <button onclick="submitContactForm()">Submit</button>
+                </div>
+                <div id="message-box"></div>
+                <div class="social-media">
+                    <a href="https://www.facebook.com" target="_blank">Facebook</a>
+                    <a href="https://www.twitter.com" target="_blank">Twitter</a>
+                    <a href="https://www.instagram.com" target="_blank">Instagram</a>
+                </div>
+            </div>
+            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2669.2883980252964!2d77.0252966294969!3d11.02829930247746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba858979f85136b%3A0xdd9ca28d3c37cf8a!2sCoimbatore%20Institute%20of%20Technology!5e0!3m2!1sen!2sin!4v1721055138911!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map"></iframe>
+        </div>
+    </div>
+    <script>
+        function searchRecipe() {
+            var searchQuery = document.getElementById("search-input").value.toLowerCase();
+            var recipeBoxes = document.getElementsByClassName("recipe-box");
+            var found = false;
+
+            for (var i = 0; i < recipeBoxes.length; i++) {
+                var recipeTitle = recipeBoxes[i].getElementsByClassName("recipe-title")[0].innerText.toLowerCase();
+                if (recipeTitle.includes(searchQuery)) {
+                    alert("Recipe found: " + recipeTitle);
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                alert("No recipes found for: " + searchQuery);
+            }
+        }
+
+        function searchRecipe() {
+    const query = document.getElementById('search-input').value.toLowerCase();
+    const recipes = document.querySelectorAll('.recipe-card');
+
+    let foundRecipe = null; // Variable to store the found recipe
+
+    recipes.forEach(recipe => {
+        const title = recipe.querySelector('.recipe-title').innerText.toLowerCase();
+        const description = recipe.querySelector('.recipe-description').innerText.toLowerCase();
+        const recipeId = recipe.getAttribute('data-recipe-id'); // Get the recipe ID
+
+        // Show or hide recipes based on the search query
+        if (title.includes(query) || description.includes(query)) {
+            recipe.style.display = 'block';
+            foundRecipe = recipeId; // Store the found recipe ID
+        } else {
+            recipe.style.display = 'none';
+        }
+    });
+
+    // If a recipe is found, redirect to the view page
+    if (foundRecipe) {
+        window.location.href = `/view_recipe.html?recipe_id=${foundRecipe}`; // Redirect with the recipe ID
+    }
+}
+
+
+
+    </script>
+</body>
+</html>
+
